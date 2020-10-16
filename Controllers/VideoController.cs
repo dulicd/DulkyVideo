@@ -27,11 +27,20 @@ namespace DulkyVideo.Controllers
         }
 
         [HttpGet()]
-        public async Task<IActionResult> GetAccessToken(string identity) 
+        public async Task<IActionResult> GetAccessTokenToCreateRoom(string roomName) 
         {
             var user = await _userManager.GetUserAsync(User);
-            var token = _videoService.GetAccessToken(user.UserName);
-            return Json(token);
+            var response = _videoService.GetAccessTokenToCreateRoom(user.UserName, roomName);
+           
+            return Json(response); 
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetContacts()
+        {
+            var user = await _userManager.GetUserAsync(User);
+            var result = _videoService.GetContacts(user.Id);
+            return PartialView("_SelectRoomPartial", result);
         }
     }
 }

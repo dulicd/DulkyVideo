@@ -1,7 +1,6 @@
 ﻿'use strict';
 
 const $modals = $('#modals');
-const $joinRoomModal = $('#join-room', $modals);
 
 const connectOptions = {
 
@@ -25,26 +24,32 @@ const deviceIds = {
  * @param [error=null] - Error from the previous Room session, if any
  */
 async function selectAndJoinRoom(error = null) {
-    const formData = await selectRoom($joinRoomModal, error);
+    const formData = await selectRoom(error);
 
-    const { identity, roomName } = formData;
+    const { roomName } = formData;
 
     try {
+        var accessToken;
 
-        // Fetch an AccessToken from backend to join the Room.
-        var token = await getAccessToken();
+        // Fetch an AccessToken from backend to create the Room.
+        var ajaxResponse = await getAccessTokenToCreateRoom(roomName);
+        if (ajaxResponse.statusCode === 200) {
+            accessToken = ajaxResponse.value;
+        }
+        else if (ajaxResponse.statusCode === 400) {
+            error.message = ajaxResponse.message;
+            throw
+        }
+
 
         // Add the specified audio device ID to ConnectOptions.
         connectOptions.audio = { deviceId: { exact: deviceIds.audio } };
-
-        // Add the specified Room name to ConnectOptions.
-        connectOptions.name = roomName;
 
         // Add the specified video device ID to ConnectOptions.
         connectOptions.video.deviceId = { exact: deviceIds.video };
 
         // Join the Room.
-        await joinRoom(token, connectOptions);
+        await joinRoom(accessToken, connectOptions);
 
         // After the video session, display the room selection modal.
         return selectAndJoinRoom();
@@ -85,17 +90,16 @@ async function selectMicrophone() {
 window.addEventListener('load', selectMicrophone);
 
 
-async function getAccessToken(identity) {
+function getAccessTokenToCreateRoom(roomName) {
     return $.ajax({
-        dataType: 'json',
         type: 'get',
-        url: "/Video/GetAccessToken",
-        data: { 'identity': identity },
+        url: "/Video/GetAccessTokenToCreateRoom",
+        data: { 'roomName': roomName },
         success: function (res) {
-
+           
         },
         error: function (err) {
-            console.log("Error => Get access token");
+            console.log("Error => Get access token to create room");
         }
     });
 }
