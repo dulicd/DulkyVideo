@@ -38,7 +38,7 @@ async function selectAndJoinRoom(error = null) {
         }
         else if (ajaxResponse.statusCode === 400) {
             error.message = ajaxResponse.message;
-            throw
+            throw ajaxResponse.message;
         }
 
 
