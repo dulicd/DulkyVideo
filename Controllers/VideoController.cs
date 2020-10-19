@@ -1,4 +1,5 @@
-﻿using DulkyVideo.Services.Intrerfaces;
+﻿using DulkyVideo.Authorization;
+using DulkyVideo.Services.Intrerfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -12,10 +13,10 @@ namespace DulkyVideo.Controllers
 {
     public class VideoController : Controller
     {
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly UserManager<ApplicationUser> _userManager;
         private readonly IVideoService _videoService;
 
-        public VideoController(UserManager<IdentityUser> userManager, IVideoService videoService)
+        public VideoController(UserManager<ApplicationUser> userManager, IVideoService videoService)
         {
             _userManager = userManager;
             _videoService = videoService;

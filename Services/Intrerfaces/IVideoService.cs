@@ -11,6 +11,6 @@ namespace DulkyVideo.Services.Intrerfaces
     {
 
         public ResponseModel<string> GetAccessTokenToCreateRoom(string identity, string roomName);
-        public UserModel GetContacts(string userId);
+        public UserModel GetContacts(long userId);
     }
 }

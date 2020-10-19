@@ -1,4 +1,5 @@
-﻿using DulkyVideo.Data;
+﻿using DulkyVideo.Authorization;
+using DulkyVideo.Data;
 using DulkyVideo.Models;
 using DulkyVideo.Services.Intrerfaces;
 using Microsoft.AspNetCore.Identity;
@@ -17,9 +18,9 @@ namespace DulkyVideo.Services.Services
 {
     public class VideoService : IVideoService
     {
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public VideoService(UserManager<IdentityUser> userManager)
+        public VideoService(UserManager<ApplicationUser> userManager)
         {
             _userManager = userManager;
         }
@@ -62,7 +63,7 @@ namespace DulkyVideo.Services.Services
             return response;
         }
 
-        public UserModel GetContacts(string userId)
+        public UserModel GetContacts(long userId)
         {
             var result = new UserModel() {
                 Contacts = new List<SelectListItem>()
@@ -72,7 +73,7 @@ namespace DulkyVideo.Services.Services
                 var contacts = _userManager.Users.Where(u => u.Id != userId).Select(u => 
                     new SelectListItem
                     { 
-                        Value = u.Id,
+                        Value = u.Id.ToString(),
                         Text = u.UserName
                     }
                 ).ToList();
@@ -95,7 +96,7 @@ namespace DulkyVideo.Services.Services
             try
             {
                 const string accountSid = "ACe00c55e35e1d70b4a5b00497bc2a4f84";
-                const string authToken = "";
+                const string authToken = "c831c48f912167d24e92129fbdab95cd";
 
                 TwilioClient.Init(accountSid, authToken);
 

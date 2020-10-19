@@ -14,6 +14,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using DulkyVideo.Services.Intrerfaces;
 using DulkyVideo.Services.Services;
+using DulkyVideo.Hubs;
+using DulkyVideo.Authorization;
 
 namespace DulkyVideo
 {
@@ -32,17 +34,24 @@ namespace DulkyVideo
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")));
-            services.AddDefaultIdentity<IdentityUser>(options => {
+            services.AddDbContext<DulkyVideoContext>(options =>
+                options.UseSqlServer(
+                    Configuration.GetConnectionString("DefaultConnection")));
+            services.AddIdentity<ApplicationUser, ApplicationRole>(options => {
                 options.SignIn.RequireConfirmedAccount = false;
                 options.Password.RequireLowercase = false;
                 options.Password.RequireUppercase = false;
                 options.Password.RequireDigit = false;
                 options.Password.RequireNonAlphanumeric = false;
             })
-                .AddEntityFrameworkStores<ApplicationDbContext>();
+                .AddEntityFrameworkStores<ApplicationDbContext>()
+                .AddDefaultTokenProviders()
+                .AddDefaultUI();
             services.AddControllersWithViews();
             services.AddRazorPages();
             services.AddControllersWithViews().AddRazorRuntimeCompilation();
+
+            services.AddSignalR();
 
             services.AddScoped<IVideoService, VideoService>();
         }
@@ -75,6 +84,7 @@ namespace DulkyVideo
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
                 endpoints.MapRazorPages();
+                endpoints.MapHub<ConnectionHub>("/connectionhub");
             });
         }
     }
