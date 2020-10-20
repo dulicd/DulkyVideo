@@ -4,14 +4,23 @@
             <div class="row participantlist">
                 <div class="col-12">Participants</div>
             </div>
-            <div class="row" style=" position:absolute;bottom:70px; left:65px;">
-                <i class="fas fa-microphone fa-2x"></i>
+            <div class="row">
+                <div class="col-6">
+                    <i class="fas fa-microphone fa-2x"></i>
+                </div>
+                <div class="col-6">
+                    <i class="fas fa-video fa-2x"></i>
+                </div>
             </div>
-            <div class="row" style="position:absolute;bottom:70px; left:110px;">
-                <i class="fas fa-video fa-2x"></i>
+            <div class="row join-room">
+                <div class="col-12">
+                    <button class="btn btn-light">Join room</button>
+                </div>
             </div>
-            <div class="row leave-room" style="position:absolute; bottom:10px; left:55px;">
-                <button class="btn btn-dark">Leave room</button>
+            <div class="row leave-room">
+                <div class="col-12">
+                    <button class="btn btn-light">Leave room</button>
+                </div>
             </div>
         </div>
         <div id="active-participant" class="col-xs-12 col-sm-9 col-md-10" style="text-align: center;">
@@ -65,31 +74,31 @@
             </div>
         </div>
         @*<div class="modal fade" id="join-room" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="join-room-label" aria-hidden="true">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="join-room-label">Video Chat</h5>
-                    </div>
-                    <div class="modal-body">
-                        <div class="form-group">
-                            <label id="room-name-label" for="room-name">Room Name</label>
-                            <input id="room-name" class="form-control" type="text" />
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="join-room-label">Video Chat</h5>
+                        </div>
+                        <div class="modal-body">
+                            <div class="form-group">
+                                <label id="room-name-label" for="room-name">Room Name</label>
+                                <input id="room-name" class="form-control" type="text" />
 
+                            </div>
+                            <div class="form-group">
+                                <label id="screen-name-label" for="screen-name">User Name</label>
+                                <input id="screen-name" class="form-control" type="text" />
+                            </div>
+                            <div class="alert alert-warning" role="alert">
+                            </div>
                         </div>
-                        <div class="form-group">
-                            <label id="screen-name-label" for="screen-name">User Name</label>
-                            <input id="screen-name" class="form-control" type="text" />
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-dark">Change Microphone and Camera</button>
+                            <button type="button" class="btn btn-primary">Join</button>
                         </div>
-                        <div class="alert alert-warning" role="alert">
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-dark">Change Microphone and Camera</button>
-                        <button type="button" class="btn btn-primary">Join</button>
                     </div>
                 </div>
-            </div>
-        </div>*@
+            </div>*@
         <div class="modal fade" id="show-error" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="show-error-label" aria-hidden="true">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">

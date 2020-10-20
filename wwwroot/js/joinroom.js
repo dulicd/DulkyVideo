@@ -6,7 +6,7 @@ const $room = $('#room');
 const $activeParticipant = $('div#active-participant > div.participant.main', $room);
 const $activeVideo = $('video', $activeParticipant);
 const $participants = $('div#participants > div.row.participantlist', $room);
-const $leave = $('div#participants > div.row.leave-room > button', $room);
+const $leave = $('div#participants > div.row.leave-room > div > button', $room);
 
 // The current active Participant in the Room.
 let activeParticipant = null;

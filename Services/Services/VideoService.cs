@@ -96,7 +96,7 @@ namespace DulkyVideo.Services.Services
             try
             {
                 const string accountSid = "ACe00c55e35e1d70b4a5b00497bc2a4f84";
-                const string authToken = "c831c48f912167d24e92129fbdab95cd";
+                const string authToken = "bab30b126cd3825063b6211df9761408";
 
                 TwilioClient.Init(accountSid, authToken);
 

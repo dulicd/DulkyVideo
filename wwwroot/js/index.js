@@ -1,6 +1,7 @@
 ﻿'use strict';
 
 const $modals = $('#modals');
+//const $join = $('div#participants > div.row.join-room > button', $room);
 
 const connectOptions = {
 
@@ -70,7 +71,7 @@ async function selectCamera() {
     } catch (error) {
 
     }
-    return selectAndJoinRoom();
+    //return selectAndJoinRoom();
 }
 
 /**
@@ -80,6 +81,9 @@ async function selectMicrophone() {
 
     try {
         deviceIds.audio = await selectMedia('audio');
+        $(".join-room").click(function () {
+            selectAndJoinRoom(null)
+        });
     } catch (error) {
 
     }
