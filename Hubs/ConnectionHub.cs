@@ -31,39 +31,39 @@ namespace DulkyVideo.Hubs
 
         public override Task OnConnectedAsync()
         {
-            var name = Context.User.Identity.Name;
+            //var name = Context.User.Identity.Name;
 
-            var user = _userManager.Users.Where(u => u.UserName == name).FirstOrDefault();
+            //var user = _userManager.Users.Where(u => u.UserName == name).FirstOrDefault();
 
-            if (user != null)
-            {
-                var connection = new Connection
-                {
-                    Connected = true,
-                    UserId = user.Id,
-                    ConnectionId = Context.ConnectionId
-                };
-                _entity.Connection.Add(connection);
-            }
+            //if (user != null)
+            //{
+            //    var connection = new Connection
+            //    {
+            //        Connected = true,
+            //        UserId = user.Id,
+            //        ConnectionId = Context.ConnectionId
+            //    };
+            //    _entity.Connection.Add(connection);
+            //}
 
 
-            _entity.SaveChanges();
+            //_entity.SaveChanges();
             return base.OnConnectedAsync();
         }
 
         public override Task OnDisconnectedAsync(Exception exception)
         {
-            var name = Context.User.Identity.Name;
-            var user = _userManager.Users.Where(u => u.UserName == name).FirstOrDefault();
-            if (user != null)
-            {
-                var connection = _entity.Connection.Where(c => c.ConnectionId == Context.ConnectionId && c.UserId == user.Id).FirstOrDefault();
-                if (connection != null)
-                {
-                    _entity.Connection.Remove(connection);
-                }
-                _entity.SaveChanges();
-            }
+            //var name = Context.User.Identity.Name;
+            //var user = _userManager.Users.Where(u => u.UserName == name).FirstOrDefault();
+            //if (user != null)
+            //{
+            //    var connection = _entity.Connection.Where(c => c.ConnectionId == Context.ConnectionId && c.UserId == user.Id).FirstOrDefault();
+            //    if (connection != null)
+            //    {
+            //        _entity.Connection.Remove(connection);
+            //    }
+            //    _entity.SaveChanges();
+            //}
 
             return base.OnDisconnectedAsync(exception);
         }

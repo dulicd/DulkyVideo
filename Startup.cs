@@ -16,6 +16,9 @@ using DulkyVideo.Services.Intrerfaces;
 using DulkyVideo.Services.Services;
 using DulkyVideo.Hubs;
 using DulkyVideo.Authorization;
+using FirebaseAdmin;
+using Google.Apis.Auth.OAuth2;
+using Newtonsoft.Json;
 
 namespace DulkyVideo
 {
@@ -51,6 +54,14 @@ namespace DulkyVideo
             services.AddRazorPages();
             services.AddControllersWithViews().AddRazorRuntimeCompilation();
 
+            //Firebase
+            var privateKey = Configuration.GetSection("Firebase:PrivateKey").Get<Dictionary<string, string>>();
+            FirebaseApp.Create(new AppOptions()
+            {
+                Credential = GoogleCredential.FromJson(JsonConvert.SerializeObject(privateKey))
+            });
+
+            //SignalR
             services.AddSignalR();
 
             services.AddScoped<IVideoService, VideoService>();

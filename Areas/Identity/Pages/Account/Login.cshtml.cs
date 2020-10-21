@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using DulkyVideo.Authorization;
+using DulkyVideo.Data;
 
 namespace DulkyVideo.Areas.Identity.Pages.Account
 {
@@ -19,14 +20,17 @@ namespace DulkyVideo.Areas.Identity.Pages.Account
     public class LoginModel : PageModel
     {
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly DulkyVideoContext _entity;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly ILogger<LoginModel> _logger;
 
         public LoginModel(SignInManager<ApplicationUser> signInManager, 
             ILogger<LoginModel> logger,
-            UserManager<ApplicationUser> userManager)
+            UserManager<ApplicationUser> userManager,
+            DulkyVideoContext entity)
         {
             _userManager = userManager;
+            _entity = entity;
             _signInManager = signInManager;
             _logger = logger;
         }
@@ -41,6 +45,8 @@ namespace DulkyVideo.Areas.Identity.Pages.Account
         [TempData]
         public string ErrorMessage { get; set; }
 
+        
+
         public class InputModel
         {
             [Required]
@@ -53,6 +59,7 @@ namespace DulkyVideo.Areas.Identity.Pages.Account
 
             [Display(Name = "Remember me?")]
             public bool RememberMe { get; set; }
+            public string NotifiationToken { get; set; }
         }
 
         public async Task OnGetAsync(string returnUrl = null)
@@ -83,6 +90,22 @@ namespace DulkyVideo.Areas.Identity.Pages.Account
                 var result = await _signInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure: false);
                 if (result.Succeeded)
                 {
+                    var user = await _userManager.FindByNameAsync(Input.Email);
+                    var connection = _entity.Connection.Where(c => c.UserId == user.Id).FirstOrDefault();
+                    if (connection == null)
+                    {
+                        var newConnection = new Connection
+                        {
+                            UserId = user.Id,
+                            NotificationToken = Input.NotifiationToken
+                        };
+                        _entity.Connection.Add(newConnection);
+                    }
+                    else 
+                    {
+                        connection.NotificationToken = Input.NotifiationToken;
+                    }
+                    _entity.SaveChanges();
                     _logger.LogInformation("User logged in.");
                     return LocalRedirect(returnUrl);
                 }

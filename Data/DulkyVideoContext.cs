@@ -133,8 +133,6 @@ namespace DulkyVideo.Data
 
             modelBuilder.Entity<Connection>(entity =>
             {
-                entity.Property(e => e.ConnectionId).HasColumnName("ConnectionID");
-
                 entity.HasOne(d => d.User)
                     .WithMany(p => p.Connection)
                     .HasForeignKey(d => d.UserId)
