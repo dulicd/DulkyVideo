@@ -31,7 +31,7 @@ namespace DulkyVideo.Services.Services
          * identity = logged user(user which create room) 
          * roomName = userId which will join room later 
          * **/     
-        public async Task<ResponseModel<string>> GetAccessTokenToCreateRoom(string identity, string roomName)
+        public async Task<ResponseModel<string>> GetAccessTokenToCreateRoom(string username, string roomName)
         {
             var response = new ResponseModel<string>();
             try
@@ -52,12 +52,12 @@ namespace DulkyVideo.Services.Services
                 var token = new Token("ACe00c55e35e1d70b4a5b00497bc2a4f84",
                              "SKef6f4b9216613962a36c43edb0f5596b",
                              "SD1rVJFOKeou0gfgcuE8iukmyx8QoJ1R",
-                             identity ?? Guid.NewGuid().ToString(),
+                             username ?? Guid.NewGuid().ToString(),
                              grants: grants).ToJwt();
 
                 var receiverId = Convert.ToInt64(roomName);
                 var userConnection = _entity.Connection.Where(c => c.UserId == receiverId).FirstOrDefault();
-                await SendPushNotification(userConnection.NotificationToken);
+                await SendPushNotification(userConnection.NotificationToken, roomName);
                 response.StatusCode = HttpStatusCode.OK;
                 response.Value = token;
             }
@@ -69,7 +69,7 @@ namespace DulkyVideo.Services.Services
             return response;
         }
 
-        public async Task<ResponseModel<string>> SendPushNotification(string notificationToken)
+        public async Task<ResponseModel<string>> SendPushNotification(string notificationToken, string roomName)
         {
             var response = new ResponseModel<string>();
             try
@@ -80,7 +80,7 @@ namespace DulkyVideo.Services.Services
                     Notification = new FirebaseAdmin.Messaging.Notification()
                     { 
                         Title = "Titleee",
-                        Body = "Bodyyyy"
+                        Body = roomName
                     }
                 };
 
@@ -90,6 +90,48 @@ namespace DulkyVideo.Services.Services
             catch (Exception ex)
             {
                 response.StatusCode = HttpStatusCode.InternalServerError;
+            }
+            return response;
+        }
+
+        public ResponseModel<string> GetAccessTokenToJoinRoom(string userId, string username, string roomName)
+        {
+            var response = new ResponseModel<string>();
+            try
+            {
+                //Check if user access appropriate room
+                if (userId != roomName)
+                {
+                    response.StatusCode = HttpStatusCode.BadRequest;
+                    response.Message = "Wrong room!";
+                    return response;
+                }
+                //Check if room exist
+                var room = GetRoomByName(roomName);
+                if (!room.Succeeded)
+                {
+                    response.StatusCode = HttpStatusCode.BadRequest;
+                    response.Message = "The room doesn't exist!";
+                    return response;
+                }
+
+                var grant = new VideoGrant();
+                grant.Room = roomName;
+                var grants = new HashSet<IGrant> { grant };
+
+                var token = new Token("ACe00c55e35e1d70b4a5b00497bc2a4f84",
+                             "SKef6f4b9216613962a36c43edb0f5596b",
+                             "SD1rVJFOKeou0gfgcuE8iukmyx8QoJ1R",
+                             username ?? Guid.NewGuid().ToString(),
+                             grants: grants).ToJwt();
+
+                response.StatusCode = HttpStatusCode.OK;
+                response.Value = token;
+            }
+            catch (Exception ex)
+            {
+                response.StatusCode = HttpStatusCode.InternalServerError;
+                response.Message = "Something went wrong.";
             }
             return response;
         }
@@ -127,7 +169,7 @@ namespace DulkyVideo.Services.Services
             try
             {
                 const string accountSid = "ACe00c55e35e1d70b4a5b00497bc2a4f84";
-                const string authToken = "";
+                const string authToken = "1e87e8ae23d6bdf3f123cc50b8b214d5";
 
                 TwilioClient.Init(accountSid, authToken);
 
@@ -141,6 +183,8 @@ namespace DulkyVideo.Services.Services
             }
             return result;
         }
+
+
 
         #endregion
     }

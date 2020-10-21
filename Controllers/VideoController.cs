@@ -43,5 +43,13 @@ namespace DulkyVideo.Controllers
             var result = _videoService.GetContacts(user.Id);
             return PartialView("_SelectRoomPartial", result);
         }
+
+        [HttpGet()]
+        public async Task<IActionResult> GetAccessTokenToJoinRoom(string roomName)
+        {
+            var user = await _userManager.GetUserAsync(User);
+            var response = _videoService.GetAccessTokenToJoinRoom(Convert.ToString(user.Id), user.UserName, roomName);
+            return Json(response);
+        }
     }
 }

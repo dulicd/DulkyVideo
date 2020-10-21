@@ -6,7 +6,9 @@
     <title>@ViewData["Title"] - DulkyVideo</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" />
+    <link href="~/css/bellannimation.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+    @RenderSection("Style", required: false)
 </head>
 <body>
     <header>
@@ -55,6 +57,28 @@
     <script src="https://www.gstatic.com/firebasejs/7.24.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/7.24.0/firebase-messaging.js"></script>
     <script src="~/js/Firebase/setup.js"></script>
+
+    <script>
+        function bellClicked() {
+            //window.value = "ringingButtonClicked";
+            localStorage.setItem("bellButton", "clicked");
+            //var elem = document.getElementById('ringingButton');
+            //$("#ringingButton").attr('myattr', 'true');
+            //var elem2 = document.getElementById('ringingButton');
+            ////
+
+            //var pom1 = document.getElementById('ringingButton');
+            //var pom2 = document.getElementById('ringingButton').getAttribute('myattr')
+            //if (document.getElementById('ringingButton').getAttribute('myattr') === 'true') {
+            //    console.log("BELLL");
+            //}
+            //else {
+            //    console.log("NO BELLLLL");
+            //}
+            window.location = "/Video";
+        }
+    </script>
+
     @RenderSection("Scripts", required: false)
 </body>
 </html>

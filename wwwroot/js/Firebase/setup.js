@@ -17,6 +17,7 @@ const messaging = firebase.messaging();
 
 
 messaging.onMessage(function (payload) {
-    alert("Notification arrived");
     console.log('onMessage: ', payload);
+    $(".ringing").removeAttr('hidden');
+    localStorage.setItem("roomNameNotification", payload.notification.body);
 });

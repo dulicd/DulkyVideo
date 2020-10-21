@@ -20,6 +20,43 @@ const deviceIds = {
     video: ""
 };
 
+
+async function answer() {
+
+    try {
+        deviceIds.audio = await selectMedia('audio');
+        deviceIds.video = await selectMedia('video');
+
+        var roomName = localStorage.getItem("roomNameNotification");
+        var accessToken;
+        // Fetch an AccessToken from backend to join the Room.
+        var ajaxResponse = await getAccessTokenToJoinRoom(roomName);
+        if (ajaxResponse.statusCode === 200) {
+            accessToken = ajaxResponse.value;
+        }
+        else if (ajaxResponse.statusCode === 400) {
+            error.message = ajaxResponse.message;
+            throw ajaxResponse.message;
+        }
+
+        // Add the specified audio device ID to ConnectOptions.
+        connectOptions.audio = { deviceId: { exact: deviceIds.audio } };
+
+        // Add the specified video device ID to ConnectOptions.
+        connectOptions.video.deviceId = { exact: deviceIds.video };
+
+        // Join the Room.
+        await joinRoom(accessToken, connectOptions);
+
+        // After the video session, display the room selection modal.
+        return selectAndJoinRoom();
+    } catch (error) {
+        console.log("E: ", err);
+    }
+
+}
+
+
 /**
  * Select your Room name, your screen name and join.
  * @param [error=null] - Error from the previous Room session, if any
@@ -91,7 +128,25 @@ async function selectMicrophone() {
 }
 
 
-window.addEventListener('load', selectMicrophone);
+//window.addEventListener('load', selectMicrophone);
+window.addEventListener('load', function () {
+    //var pom1 = document.getElementById('ringingButton');
+    //var pom2 = document.getElementById('ringingButton').getAttribute('myattr')
+    //if (document.getElementById('ringingButton').getAttribute('myattr') === 'true') {
+    //    console.log("BELLL");
+    //}
+    //else {
+    //    console.log("NO BELLLLL");
+    //}
+    if (localStorage.getItem("bellButton") === "clicked") {
+        localStorage.setItem("bellButton", "unclicked");
+        answer();
+    }
+    else {
+        selectMicrophone();
+    }
+});
+
 
 
 function getAccessTokenToCreateRoom(roomName) {
@@ -100,10 +155,25 @@ function getAccessTokenToCreateRoom(roomName) {
         url: "/Video/GetAccessTokenToCreateRoom",
         data: { 'roomName': roomName },
         success: function (res) {
-           
+
         },
         error: function (err) {
             console.log("Error => Get access token to create room");
         }
     });
+}
+
+function getAccessTokenToJoinRoom(roomName) {
+    return $.ajax({
+        type: 'get',
+        url: "/Video/GetAccessTokenToJoinRoom",
+        data: { 'roomName': roomName },
+        success: function (res) {
+
+        },
+        error: function (err) {
+            console.log("Error => Get access token to create room");
+        }
+    });
+    
 }
