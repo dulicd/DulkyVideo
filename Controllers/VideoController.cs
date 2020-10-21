@@ -31,7 +31,7 @@ namespace DulkyVideo.Controllers
         public async Task<IActionResult> GetAccessTokenToCreateRoom(string roomName) 
         {
             var user = await _userManager.GetUserAsync(User);
-            var response = _videoService.GetAccessTokenToCreateRoom(user.UserName, roomName);
+            var response = await _videoService.GetAccessTokenToCreateRoom(user.UserName, roomName);
            
             return Json(response); 
         }

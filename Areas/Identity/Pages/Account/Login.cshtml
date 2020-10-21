@@ -82,47 +82,5 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
-
-    <!-- The core Firebase JS SDK is always required and must be listed first -->
-    <script src="https://www.gstatic.com/firebasejs/7.24.0/firebase-app.js"></script>
-
-    <!-- TODO: Add SDKs for Firebase products that you want to use
-         https://firebase.google.com/docs/web/setup#available-libraries -->
-    <script src="https://www.gstatic.com/firebasejs/7.24.0/firebase-messaging.js"></script>
-
-    <script>
-        // Your web app's Firebase configuration
-        // For Firebase JS SDK v7.20.0 and later, measurementId is optional
-        var firebaseConfig = {
-            apiKey: "AIzaSyAsnnNV7A7ANjNrumcyAabR8LAFjIr2gKo",
-            authDomain: "dulkyvideo.firebaseapp.com",
-            databaseURL: "https://dulkyvideo.firebaseio.com",
-            projectId: "dulkyvideo",
-            storageBucket: "dulkyvideo.appspot.com",
-            messagingSenderId: "395560034625",
-            appId: "1:395560034625:web:1b3db4fd2aff94148141c0",
-            //measurementId: "G-N31W2998RW"
-        };
-        // Initialize Firebase
-        firebase.initializeApp(firebaseConfig);
-        //firebase.analytics();
-        const messaging = firebase.messaging();
-        messaging.requestPermission()
-            .then(function () {
-                console.log('Have permission!');
-                return messaging.getToken({ vapidKey: 'BMDHcMUZ2I4GT7IUddqECDMzTqecODzHPA5rYbgCaGIk-_-M8CDEnrVE1WNQmTZQ5WUYiJlb6k1DteDsnLMyoJo' });
-            })
-            .then(function (token) {
-                $("#Input_NotifiationToken").val(token);
-                console.log(token);
-            })
-            .catch(function (error) {
-                console.log('Error occured!');
-            });
-
-        messaging.onMessage(function (payload) {
-            console.log('onMessage: ', payload);
-        });
-
-    </script>
+    <script src="~/js/Firebase/gettoken.js"></script>
 }

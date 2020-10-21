@@ -10,7 +10,8 @@ namespace DulkyVideo.Services.Intrerfaces
     public interface IVideoService
     {
 
-        public ResponseModel<string> GetAccessTokenToCreateRoom(string identity, string roomName);
+        public Task<ResponseModel<string>> GetAccessTokenToCreateRoom(string identity, string roomName);
         public UserModel GetContacts(long userId);
+        public Task<ResponseModel<string>> SendPushNotification(string notificationToken);
     }
 }

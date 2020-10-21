@@ -19,17 +19,19 @@ namespace DulkyVideo.Services.Services
     public class VideoService : IVideoService
     {
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly DulkyVideoContext _entity;
 
-        public VideoService(UserManager<ApplicationUser> userManager)
+        public VideoService(UserManager<ApplicationUser> userManager, DulkyVideoContext entity)
         {
             _userManager = userManager;
+            _entity = entity;
         }
 
         /** 
          * identity = logged user(user which create room) 
          * roomName = userId which will join room later 
          * **/     
-        public ResponseModel<string> GetAccessTokenToCreateRoom(string identity, string roomName)
+        public async Task<ResponseModel<string>> GetAccessTokenToCreateRoom(string identity, string roomName)
         {
             var response = new ResponseModel<string>();
             try
@@ -52,13 +54,42 @@ namespace DulkyVideo.Services.Services
                              "SD1rVJFOKeou0gfgcuE8iukmyx8QoJ1R",
                              identity ?? Guid.NewGuid().ToString(),
                              grants: grants).ToJwt();
+
+                var receiverId = Convert.ToInt64(roomName);
+                var userConnection = _entity.Connection.Where(c => c.UserId == receiverId).FirstOrDefault();
+                await SendPushNotification(userConnection.NotificationToken);
                 response.StatusCode = HttpStatusCode.OK;
                 response.Value = token;
             }
             catch (Exception ex)
             {
                 response.StatusCode = HttpStatusCode.InternalServerError;
-                response.Message = ex.GetBaseException().Message;
+                response.Message = "Something went wrong.";
+            }
+            return response;
+        }
+
+        public async Task<ResponseModel<string>> SendPushNotification(string notificationToken)
+        {
+            var response = new ResponseModel<string>();
+            try
+            {
+                var message = new FirebaseAdmin.Messaging.Message()
+                { 
+                    Token = notificationToken,
+                    Notification = new FirebaseAdmin.Messaging.Notification()
+                    { 
+                        Title = "Titleee",
+                        Body = "Bodyyyy"
+                    }
+                };
+
+                var res = await FirebaseAdmin.Messaging.FirebaseMessaging.DefaultInstance.SendAsync(message);
+                response.StatusCode = HttpStatusCode.OK;
+            }
+            catch (Exception ex)
+            {
+                response.StatusCode = HttpStatusCode.InternalServerError;
             }
             return response;
         }
@@ -96,7 +127,7 @@ namespace DulkyVideo.Services.Services
             try
             {
                 const string accountSid = "ACe00c55e35e1d70b4a5b00497bc2a4f84";
-                const string authToken = "bab30b126cd3825063b6211df9761408";
+                const string authToken = "";
 
                 TwilioClient.Init(accountSid, authToken);
 
@@ -110,8 +141,6 @@ namespace DulkyVideo.Services.Services
             }
             return result;
         }
-
-
 
         #endregion
     }

@@ -215,7 +215,7 @@ async function joinRoom(token, connectOptions) {
     let localVideoTrack = Array.from(room.localParticipant.videoTracks.values())[0].track;
 
     // Make the Room available in the JavaScript console for debugging.
-    window.room = room;
+    //window.room = room;
 
     // Handle the LocalParticipant's media.
     participantConnected(room.localParticipant, room);
