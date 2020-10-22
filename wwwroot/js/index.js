@@ -26,6 +26,9 @@ async function answer() {
     try {
         deviceIds.audio = await selectMedia('audio');
         deviceIds.video = await selectMedia('video');
+        $(".join-room").click("click", function () {
+            selectAndJoinRoom(null)
+        });
 
         var roomName = localStorage.getItem("roomNameNotification");
         var accessToken;
@@ -47,6 +50,7 @@ async function answer() {
 
         // Join the Room.
         await joinRoom(accessToken, connectOptions);
+        document.getElementById("contactsBtn").disabled = false;
 
         // After the video session, display the room selection modal.
         return selectAndJoinRoom();
@@ -69,6 +73,8 @@ async function selectAndJoinRoom(error = null) {
     try {
         var accessToken;
 
+        document.getElementById("contactsBtn").disabled = true;
+
         // Fetch an AccessToken from backend to create the Room.
         var ajaxResponse = await getAccessTokenToCreateRoom(roomName);
         if (ajaxResponse.statusCode === 200) {
@@ -89,6 +95,7 @@ async function selectAndJoinRoom(error = null) {
         // Join the Room.
         await joinRoom(accessToken, connectOptions);
 
+        document.getElementById("contactsBtn").disabled = false;
         // After the video session, display the room selection modal.
         return selectAndJoinRoom();
 
@@ -105,6 +112,7 @@ async function selectCamera() {
 
     try {
         deviceIds.video = await selectMedia('video');
+        document.getElementById("contactsBtn").disabled = false;
     } catch (error) {
 
     }
@@ -118,7 +126,8 @@ async function selectMicrophone() {
 
     try {
         deviceIds.audio = await selectMedia('audio');
-        $(".join-room").click(function () {
+        console.log("clickkkkkk");
+        $(".join-room").click("click", function () {
             selectAndJoinRoom(null)
         });
     } catch (error) {
@@ -138,6 +147,7 @@ window.addEventListener('load', function () {
     //else {
     //    console.log("NO BELLLLL");
     //}
+    document.getElementById("contactsBtn").disabled = true;
     if (localStorage.getItem("bellButton") === "clicked") {
         localStorage.setItem("bellButton", "unclicked");
         answer();

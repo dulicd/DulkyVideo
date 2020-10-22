@@ -6,6 +6,7 @@ using System.Text;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 using DulkyVideo.Authorization;
+using DulkyVideo.Data;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -24,17 +25,20 @@ namespace DulkyVideo.Areas.Identity.Pages.Account
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
+        private readonly DulkyVideoContext _entity;
 
         public RegisterModel(
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
             ILogger<RegisterModel> logger,
-            IEmailSender emailSender)
+            IEmailSender emailSender,
+            DulkyVideoContext entity)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _logger = logger;
             _emailSender = emailSender;
+            _entity = entity;
         }
 
         [BindProperty]
@@ -61,6 +65,8 @@ namespace DulkyVideo.Areas.Identity.Pages.Account
             [Display(Name = "Confirm password")]
             [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
             public string ConfirmPassword { get; set; }
+
+            public string NotifiationToken { get; set; }
         }
 
         public async Task OnGetAsync(string returnUrl = null)
@@ -99,6 +105,21 @@ namespace DulkyVideo.Areas.Identity.Pages.Account
                     else
                     {
                         await _signInManager.SignInAsync(user, isPersistent: false);
+                        var connection = _entity.Connection.Where(c => c.UserId == user.Id).FirstOrDefault();
+                        if (connection == null)
+                        {
+                            var newConnection = new Connection
+                            {
+                                UserId = user.Id,
+                                NotificationToken = Input.NotifiationToken
+                            };
+                            _entity.Connection.Add(newConnection);
+                        }
+                        else
+                        {
+                            connection.NotificationToken = Input.NotifiationToken;
+                        }
+                        _entity.SaveChanges();
                         return LocalRedirect(returnUrl);
                     }
                 }
